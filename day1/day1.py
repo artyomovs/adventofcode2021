@@ -1,5 +1,4 @@
 """ Day1. """
-
 from pathlib import Path
 
 # Load inputs
