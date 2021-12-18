@@ -22,4 +22,3 @@ for i in range(0, len(inputs) - 3):
 
 print(increased)
 
-
