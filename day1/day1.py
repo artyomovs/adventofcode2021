@@ -21,3 +21,5 @@ for i in range(0, len(inputs) - 3):
         increased += 1
 
 print(increased)
+
+
