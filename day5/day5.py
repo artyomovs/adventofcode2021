@@ -1,7 +1,6 @@
 from pprint import pprint
 from pathlib import Path
-
-from parso import parse
+import sys
 
 INPUTS = Path('input.txt').read_text().splitlines()
 
@@ -74,10 +73,19 @@ def get_lines_overlaps(board):
                     overlaps += 1
     return overlaps
 
+def is_diagonal(point1, point2):
+    """ Determine if line at 45 degree between two points """
+    if abs(point1[0] - point2[0]) == abs(point1[1] - point2[1]):
+        result = True
+    else:
+        result = False
+    return result
+
 if __name__ == '__main__':
     global_borders = parse_line(INPUTS[0])[2]
     # print(global_borders)
     straight_lines = []
+    diagonal_lines = []
     board = []
     # Get only straight lines and edge coordinates
     for line in INPUTS:
@@ -86,11 +94,14 @@ if __name__ == '__main__':
             set_up_new_borders(line_borders, global_borders)
             point1, point2, direction = get_direction(point1, point2)
             straight_lines.append({"point1": point1, "point2": point2, "direction": direction})
+        elif is_diagonal(point1, point2):
+            diagonal_lines.append({"point1": point1, "point2": point2})
+
 
     # Fill board according to the edge coordinates
-    for y in range(0, global_borders["y_max"]+1):
+    for y in range(0, global_borders["y_max"]+2):
         line = []
-        for x in range(0, global_borders["x_max"]+1):
+        for x in range(0, global_borders["x_max"]+2):
             line.append(0)
         board.append(line)
 
@@ -113,7 +124,6 @@ if __name__ == '__main__':
     for line in straight_lines:
         point1 = line.get("point1")
         point2 = line.get("point2")
-        print(line)
 
         if line.get("direction") == "v":
             x = point1[0]
@@ -127,4 +137,18 @@ if __name__ == '__main__':
 
     # pprint(board)
     overlaps = get_lines_overlaps(board)
-    print(f"Count of overlaps: {overlaps}")
+    print(f"Count of overlaps with vertical and horizontal: {overlaps}")
+
+    # Part two - add diagonal lines
+    for line in diagonal_lines:
+        point1 = line.get("point1")
+        point2 = line.get("point2")
+
+        # print(line)
+        for x in range(min(point1[0],point2[0]), max(point1[0],point2[0]) + 1):
+            for y in range(min(point1[1],point2[1]), max(point1[1],point2[1]) + 1):
+                if is_diagonal(point1=point1, point2=[x,y]):
+                    # print(f"x={x}, y={y}")
+                    board[y][x] = int(board[y][x]) + 1
+    overlaps = get_lines_overlaps(board)
+    print(f"Count of overlaps including diagonal: {overlaps}")
