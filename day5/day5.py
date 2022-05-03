@@ -1,6 +1,7 @@
 from pprint import pprint
 from pathlib import Path
 import sys
+import pygal
 
 INPUTS = Path('input.txt').read_text().splitlines()
 
@@ -81,6 +82,18 @@ def is_diagonal(point1, point2):
         result = False
     return result
 
+def draw_board(lines):
+    """ Draw board using the visualization library. """
+    chart = pygal.XY()
+    line_number = 0
+    for line in lines:
+        point1 = line.get("point1")
+        point2 = line.get("point2")
+        chart.add(str(line_number),  [(point1[0], point1[1]), (point2[0], point2[1])])
+        line_number += 1
+    chart.render_to_file("chart.svg")
+
+
 if __name__ == '__main__':
     global_borders = parse_line(INPUTS[0])[2]
     # print(global_borders)
@@ -135,7 +148,6 @@ if __name__ == '__main__':
                 board[y][x] = int(board[y][x]) + 1
         # pprint(board)
 
-    # pprint(board)
     overlaps = get_lines_overlaps(board)
     print(f"Count of overlaps with vertical and horizontal: {overlaps}")
 
@@ -152,3 +164,7 @@ if __name__ == '__main__':
                     board[y][x] = int(board[y][x]) + 1
     overlaps = get_lines_overlaps(board)
     print(f"Count of overlaps including diagonal: {overlaps}")
+
+    # Draw board into svg
+    draw_board(straight_lines + diagonal_lines)
+    print("Draw board into svg file completed")
