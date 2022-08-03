@@ -1,0 +1,13 @@
+graph unix {
+	node [color=lightblue2 style=filled]
+	start -- kj
+	HN -- start
+	dc -- start
+	dc -- HN
+	LN -- dc
+	HN -- end
+	kj -- sa
+	kj -- HN
+	kj -- dc
+	dc -- end
+}
